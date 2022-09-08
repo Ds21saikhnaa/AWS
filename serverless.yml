@@ -9,11 +9,18 @@ plugins:
 provider:
   name: aws
   runtime: nodejs14.x
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource:
+        { "Fn::Join": ["", ["arn:aws:s3:::ds21test1", "/*"]] }
+
 
 functions:
   hello:
     handler: handler.hello
     events:
       - httpApi:
-          path: /
-          method: get
+          path: /{routeName}
+          method: "*"
