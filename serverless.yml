@@ -2,13 +2,21 @@ org: saikhanbileg
 app: aws-node-http-api-project
 service: aws-node-http-api-project
 frameworkVersion: '3'
+useDotenv: true
 
 plugins:
   - serverless-offline
+  - serverless-dotenv-plugin
 
 provider:
   name: aws
   runtime: nodejs14.x
+  environment:
+    AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+    MONGODB_URI: ${env:MONGODB_URI}
+    JWT_SECRET: ${env:JWT_SECRET}
+    JWT_EXPIRESIN: ${env:JWT_EXPIRESIN}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -18,9 +26,21 @@ provider:
 
 
 functions:
+  dynamo:
+    handler: handler.dynamo
+    events:
+      - httpApi:
+          path: person/{routeName}/{id}
+          method: "*"
   hello:
     handler: handler.hello
     events:
       - httpApi:
-          path: /{routeName}
+          path: user/{routeName}/{id}
           method: "*"
+  upload:
+    handler: handler.getPresignedUrl
+    events:
+      - httpApi:
+          path: /getUrl
+          method: "GET"
