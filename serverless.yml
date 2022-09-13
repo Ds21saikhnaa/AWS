@@ -30,13 +30,13 @@ functions:
     handler: handler.dynamo
     events:
       - httpApi:
-          path: person/{routeName}/{id}
+          path: person/{routeName}/{id+}
           method: "*"
   hello:
     handler: handler.hello
     events:
       - httpApi:
-          path: user/{routeName}/{id}
+          path: user/{routeName}/{id+}
           method: "*"
   upload:
     handler: handler.getPresignedUrl

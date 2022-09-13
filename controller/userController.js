@@ -61,7 +61,7 @@ export const humanGet = async (event) => {
 
 //1 hereglegch awah
 export const getUser = async(event) => {
-  const user = await Human.findById(event.body.id);
+  const user = await Human.findById(event.pathParameters.id);
   if(!user){
     throw new MyError("bhgu bn!!!", 401);
   }

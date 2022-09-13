@@ -1,6 +1,7 @@
 import { Person,PersonTable } from "../model/PersonModel.js";
 import { MyError } from "../utils/myError.js";
 import { v4 as uuidv4 } from 'uuid';
+import {success} from "../utils/mySuccess.js"
 
 export const createPersonTable = async(event) => {
     try {
@@ -12,13 +13,14 @@ export const createPersonTable = async(event) => {
 
 export const getPerson = async(event) => {
     const person = await Person.scan().exec();
-    return {
-        statusCode: 200,
-        body: JSON.stringify({
-            success: true,
-            data: person.toJSON()
-        }),
-    };
+    return success(person)
+    // return {
+    //     statusCode: 200,
+    //     body: JSON.stringify({
+    //         success: true,
+    //         data: person.toJSON()
+    //     }),
+    // };
 }
 
 export const findPerson = async (event, id) => {
@@ -26,22 +28,11 @@ export const findPerson = async (event, id) => {
     if (!person) {
         throw new MyError("ene hereglegch bhgui bn", 401)
     }
-    return {
-        statusCode: 200,
-        body: JSON.stringify({
-            success: true,
-            data: person.toJSON()
-        }),
-    };
+    return success(person);
 }
 
 export const createUser = async (event) => {
-    const person = await Person.create(event.body);
-    return {
-        statusCode: 200,
-        body: JSON.stringify({
-            success: true,
-            data: person.toJSON()
-        }),
-    };
+    const body = JSON.parse(event.body)
+    const person = await Person.create(body);
+    return success(person)
 }

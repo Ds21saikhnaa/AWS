@@ -1,8 +1,15 @@
 import dynamoose from "dynamoose";
+import { v4 as uuidv4 } from 'uuid';
 const personSchema = new dynamoose.Schema(
     {
-        id: String,
-        firstName: String,
+        id: {
+            type: String,
+            default: () => uuidv4(),
+        },
+        firstName: {
+            type: String,
+            required: true,
+        },
         lastName: String
     },
     {

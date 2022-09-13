@@ -25,8 +25,6 @@ export const hello = async (event, context) => {
     switch (route) {
       case "getUsers":
         await protect(event);
-        console.log(event);
-        console.log(event.requestContext.authorizer);
         return humanGet(event);
       case "getUser":
         return getUser(event);
@@ -89,13 +87,6 @@ export const getPresignedUrl = async(event) => {
   const myKey = "file-name33.png";
   const signedUrlExpireSeconds = 30000;
 
-  // const url = await s3.getSignedUrl("putObject", {
-  //   Bucket: myBucket,
-  //   Key: myKey,
-  //   Expires: signedUrlExpireSeconds,
-  //   ContentType: "image/*",
-  // });
-
   const geturl = await s3
     .getSignedUrl("getObject", {
       Bucket: myBucket,
@@ -112,11 +103,10 @@ export const getPresignedUrl = async(event) => {
 
 export const dynamo = async (event) => {
   await connectDDb();
-  const route = event.pathParameters.route;
+  const route = event.pathParameters.routeName;
   const paramsId = event.pathParameters.id;
   const met = event.requestContext.http.method;
-  console.log(event);
-
+  // console.log(event);
   if (met === "GET") {
     switch (route) {
       case "getPerson":
@@ -128,22 +118,12 @@ export const dynamo = async (event) => {
         return def();
     }
   }
-  // try {
-  //   await PersonTable.create();
-  // } catch (e) {
-  //   console.log("error");
-  // }
-  // // await Person.create({
-  // //   id: "3",
-  // //   firstName: "dorj",
-  // //   lastName: "bat"
-  // // });
-  // //const person = await Person.query("id").eq("asdfasdf").exec();
-  // const person = await Person.scan().exec();
-  // return {
-  //   statusCode: 200,
-  //   body: JSON.stringify({
-  //     data: person.toJSON()
-  //   }),
-  // };
+  if(met === "POST"){
+    switch(route){
+      case "createPerson":
+        return createUser(event);
+      default: 
+        return def();
+    }
+  }
 };
