@@ -1,6 +1,5 @@
 import { Person,PersonTable } from "../model/PersonModel.js";
 import { MyError } from "../utils/myError.js";
-import { v4 as uuidv4 } from 'uuid';
 import {success} from "../utils/mySuccess.js"
 
 export const createPersonTable = async(event) => {
@@ -32,7 +31,40 @@ export const findPerson = async (event, id) => {
 }
 
 export const createUser = async (event) => {
-    const body = JSON.parse(event.body)
+    const body = JSON.parse(event.body);
     const person = await Person.create(body);
     return success(person)
+}
+
+export const updateUser = async (event, id) => {
+    const body = JSON.parse(event.body);
+    const find = await Person.get(id);
+    if (!find) {
+        throw new MyError("hereglegch oldsongui", 401);
+    }
+    for(let attr in body){
+        find[attr] = body[attr];
+    }
+    await find.save();
+    //const person = await Person.update(id, body);
+    return success(find);
+}
+
+export const deleteUser = async(event, id) => {
+    const person = await Person.get(id);
+    if (!person) {
+        throw new MyError("hereglegch oldsongui", 401);
+    }
+    await person.delete();
+    return {
+        statusCode: 200,
+        body: JSON.stringify(
+          {
+            success: true,
+            data: "done"
+          },
+          null,
+          2
+        ),
+      };
 }

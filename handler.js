@@ -4,7 +4,7 @@ import { connectDB} from "./dbConfig/db.js";
 import { connectDDb} from "./dbConfig/ddb.js"; 
 import {userRegister, humanGet, userLogin, getUser} from "./controller/userController.js";
 import { getPosts, getUserPosts,newPost,getTimeline,deletePost } from "./controller/postController.js";
-import {createPersonTable, createUser, getPerson, findPerson} from "./controller/dynamoController.js";
+import {createPersonTable, createUser, getPerson, findPerson, updateUser, deleteUser} from "./controller/dynamoController.js";
 import {protect} from "./middleware/protect.js"
 import { Person, PersonTable } from "./model/PersonModel.js";
 
@@ -113,7 +113,7 @@ export const dynamo = async (event) => {
         return getPerson(event);
       case "findPerson":
         console.log(event);
-        return findPerson(event, id);
+        return findPerson(event, paramsId);
       default:
         return def();
     }
@@ -125,5 +125,21 @@ export const dynamo = async (event) => {
       default: 
         return def();
     }
+  }
+  if (met === "PUT") {
+    switch (route) {
+      case "updatePerson":
+        return updateUser(event, paramsId);
+      default:
+        return def();
+    }
+  }
+  if (met === "DELETE") {
+    switch (route) {
+      case "deleteUser":
+        return deleteUser(event, paramsId);
+        default:
+          return def();
+    } 
   }
 };
